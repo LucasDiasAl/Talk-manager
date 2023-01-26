@@ -26,7 +26,23 @@ const writeTalkers = async (Talker) => {
   }
 };
 
+const updateTalkers = async (idTalker, newData) => {
+  try {
+    const talker = await readTalkers();
+    const newTalker = { id: idTalker, ...newData };
+    const talkerToUpdate = talker.filter((curr) => curr.id === idTalker)[0];
+    const index = talker.indexOf(talkerToUpdate);
+    if (index === -1) throw new Error('Não há ninguem com esse id');
+    talker.splice(index, 1, newTalker);
+    await fs.writeFile(path.resolve(__dirname, FILE_PATH_TALKER), JSON.stringify(talker));
+    return talker.filter((curr) => curr.id === idTalker);
+  } catch (err) {
+    console.error(`error: ${err.message}`);
+  }
+};
+
 module.exports = {
   readTalkers,
   writeTalkers,
+  updateTalkers,
 };

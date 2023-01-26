@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { readTalkers, writeTalkers } = require('../utils/fsUtils');
+const { readTalkers, writeTalkers, updateTalkers } = require('../utils/fsUtils');
 
 const { fullTalkerValidation } = require('../utils/validations');
 
@@ -34,10 +34,24 @@ router.post('/', async (req, res) => {
     const talker = req.body;
     const token = req.headers.authorization;
     const validation = fullTalkerValidation(talker, token);
-    console.log(validation, token);
     if (validation !== true) throw new Error(validation);
     const talkerAdded = await writeTalkers(talker);
     res.status(201).json({ ...talkerAdded });
+  } catch (err) {
+    const code = (/(token)/i).test(err.message) === true ? 401 : 400;
+    res.status(code).json({ message: err.message });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const talker = req.body;
+    const token = req.headers.authorization;
+    const validation = fullTalkerValidation(talker, token);
+    if (validation !== true) throw new Error(validation);
+    const updatedTalker = await updateTalkers(Number(id), talker);
+    res.status(200).json(...updatedTalker);
   } catch (err) {
     const code = (/(token)/i).test(err.message) === true ? 401 : 400;
     res.status(code).json({ message: err.message });

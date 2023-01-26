@@ -67,11 +67,6 @@ const fullTalkerValidation = (obj, token) => {
   return errosMessages[anyInv[0]];
 };
 
-const test = () => {
-  console.log(tokenValidation());
-};
-test();
-
 module.exports = {
   emailValidation,
   passwordValidation,
