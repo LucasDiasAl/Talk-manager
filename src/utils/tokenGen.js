@@ -1,5 +1,5 @@
 const tokenGenHalf = () => {
-  const halfToken = Math.random().toString(36).substr(2).slice(0, 8);
+  const halfToken = Math.random().toString(36).slice(2, 10);
   return halfToken;
 };
 
