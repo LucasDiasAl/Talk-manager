@@ -17,6 +17,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/search', async (req, res) => {
+  try {
+    const searchParam = req.query.q;
+    const token = req.headers.authorization;
+    const validate = tokenValidation(token);
+    if (validate !== true) {
+      throw new Error(validate);
+    }
+    const talkers = await readTalkers();
+    const regex = new RegExp(searchParam);
+    const result = talkers.filter(({ name }) => regex.test(name));
+    res.status(HTTP_OK_STATUS).json(result);
+  } catch (err) {
+    const messageError = err.message === 'tokUnd' ? 'Token não encontrado' : 'Token inválido';
+    res.status(401).json({ message: messageError });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const talker = (await readTalkers()).filter(({ id }) => id === Number(req.params.id));
