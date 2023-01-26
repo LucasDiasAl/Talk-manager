@@ -71,4 +71,5 @@ module.exports = {
   emailValidation,
   passwordValidation,
   fullTalkerValidation,
+  tokenValidation,
 };

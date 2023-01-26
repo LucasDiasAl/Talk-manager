@@ -10,7 +10,7 @@ const readTalkers = async () => {
 
     return JSON.parse(talkers);
   } catch (err) {
-    console.error(err.message);
+    console.error(`error: ${err.message}`);
   }
 };
 
@@ -22,7 +22,7 @@ const writeTalkers = async (Talker) => {
     await fs.writeFile(path.resolve(__dirname, FILE_PATH_TALKER), newTalkers);
     return talkerAdd;
   } catch (err) {
-    console.error(err.message);
+    console.error(`error: ${err.message}`);
   }
 };
 
@@ -41,8 +41,19 @@ const updateTalkers = async (idTalker, newData) => {
   }
 };
 
+const deleteTalkers = async (idTalker) => {
+  try {
+    const talkers = await readTalkers();
+    const newTalkers = JSON.stringify(talkers.filter(({ id }) => id !== Number(idTalker)));
+    await fs.writeFile(path.resolve(__dirname, FILE_PATH_TALKER), newTalkers);
+  } catch (err) {
+    console.error(`error: ${err.message}`);
+  }
+};
+
 module.exports = {
   readTalkers,
   writeTalkers,
   updateTalkers,
+  deleteTalkers,
 };

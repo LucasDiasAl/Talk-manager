@@ -1,8 +1,8 @@
 const express = require('express');
 
-const { readTalkers, writeTalkers, updateTalkers } = require('../utils/fsUtils');
+const { readTalkers, writeTalkers, updateTalkers, deleteTalkers } = require('../utils/fsUtils');
 
-const { fullTalkerValidation } = require('../utils/validations');
+const { fullTalkerValidation, tokenValidation } = require('../utils/validations');
 
 const HTTP_OK_STATUS = 200;
 
@@ -58,4 +58,19 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const token = req.headers.authorization;
+    const validate = tokenValidation(token);
+    if (validate !== true) {
+      throw new Error(validate);
+    }
+    await deleteTalkers(id);
+    res.status(204).send();
+  } catch (err) {
+    const messageError = err.message === 'tokUnd' ? 'Token não encontrado' : 'Token inválido';
+    res.status(401).json({ message: messageError });
+  }
+});
 module.exports = router;
